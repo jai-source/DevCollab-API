@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon --config src/nodemon.json",
     "build": "tsc",
     "start": "node dist/server.js"
   },
