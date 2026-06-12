@@ -1,0 +1,49 @@
+{
+  "name": "devcollab-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+
+  "scripts": {
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jai-source/DevCollab-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jai-source/DevCollab-API/issues"
+  },
+  "homepage": "https://github.com/jai-source/DevCollab-API#readme",
+  "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "bcrypt": "^6.0.0",
+    "bullmq": "^5.78.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "prisma": "^7.8.0",
+    "redis": "^6.0.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.9.3",
+    "eslint": "^10.4.1",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
