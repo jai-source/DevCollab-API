@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon --config src/nodemon.json",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "db:generate": "prisma generate",
+    "db:seed": "prisma db seed"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   },
   "homepage": "https://github.com/jai-source/DevCollab-API#readme",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.78.0",
@@ -29,6 +32,7 @@
     "express": "^5.2.1",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
+    "pg": "^8.21.0",
     "prisma": "^7.8.0",
     "redis": "^6.0.0",
     "zod": "^4.4.3"
