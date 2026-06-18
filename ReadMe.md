@@ -70,27 +70,6 @@ prisma
 └── seed.ts
 ```
 
----
-
-## Environment Variables
-
-Create a `.env` file in the root directory.
-
-```env
-PORT=3000
-
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/devcollab?connection_limit=5"
-
-REDIS_URL="redis://localhost:6379"
-
-JWT_ACCESS_SECRET=your_access_secret
-
-JWT_REFRESH_SECRET=your_refresh_secret
-
-NODE_ENV=development
-```
-
----
 
 ## Connection Pooling
 
