@@ -13,11 +13,17 @@ const envSchema = z.object({
   REDIS_URL: z.string(),
 
   JWT_SECRET: z.string().min(32),
+  JWT_ACCESS_SECRET: z.string().trim().min(1).optional(),
+  JWT_REFRESH_SECRET: z.string().trim().min(1).optional(),
 
   JWT_ACCESS_EXPIRES_IN: z.string(),
 
   JWT_REFRESH_EXPIRES_IN: z.string(),
-});
+}).transform((values) => ({
+  ...values,
+  JWT_ACCESS_SECRET: values.JWT_ACCESS_SECRET ?? values.JWT_SECRET,
+  JWT_REFRESH_SECRET: values.JWT_REFRESH_SECRET ?? values.JWT_SECRET,
+}));
 
 const env = envSchema.parse(process.env);
 
