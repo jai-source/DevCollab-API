@@ -5,6 +5,11 @@ import { registerUser } from "../services/auth.service";
 import { getUserById } from "../services/auth.service";
 import { loginUser } from "../services/auth.service"
 import { successResponse } from "../utils/apiResponse";
+import { logoutUser } from "../services/auth.service";
+import { logoutSchema } from "../modules/auth/auth.schema";
+import { refreshSchema } from "../modules/auth/auth.schema";
+import { refreshAccessToken } from "../services/auth.service";
+
 
 export async function register(
   req: Request,
@@ -74,5 +79,43 @@ export async function getCurrentUser(
     200,
     "User fetched successfully",
     user
+  );
+}
+
+export async function logout(
+  req: Request,
+  res: Response
+) {
+  const { refreshToken } =
+    logoutSchema.parse(req.body);
+
+  await logoutUser(refreshToken);
+
+  return successResponse(
+    res,
+    200,
+    "Logged out successfully"
+  );
+}
+
+export async function refresh(
+  req: Request,
+  res: Response
+) {
+  const { refreshToken } =
+    refreshSchema.parse(req.body);
+
+  const accessToken =
+    await refreshAccessToken(
+      refreshToken
+    );
+
+  return successResponse(
+    res,
+    200,
+    "Access token refreshed successfully",
+    {
+      accessToken,
+    }
   );
 }

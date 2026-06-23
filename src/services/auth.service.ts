@@ -3,7 +3,8 @@ import { prisma } from "../config/prisma";
 import { RegisterInput } from "../modules/auth/auth.schema";
 import { LoginInput } from "../modules/auth/auth.schema";
 import { generateAccessToken, generateRefreshToken } from "../utils/JWT";
-
+import jwt from "jsonwebtoken";
+import env from "../config/env";
 
 //Register User
 export async function registerUser(data: RegisterInput) {
@@ -99,4 +100,55 @@ export async function getUserById(
     });
 
   return user;
+}
+
+export async function logoutUser(
+  refreshToken: string
+) {
+  await prisma.refreshToken.deleteMany({
+    where: {
+      token: refreshToken,
+    },
+  });
+  return true;
+}
+
+export async function refreshAccessToken(
+  refreshToken: string
+) {
+  const storedToken =
+    await prisma.refreshToken.findUnique({
+      where: {
+        token: refreshToken,
+      },
+    });
+
+  if (!storedToken) {
+    throw new Error(
+      "Refresh token not found"
+    );
+  }
+
+  const decoded = jwt.verify(
+    refreshToken,
+    env.JWT_REFRESH_SECRET
+  );
+
+  if (typeof decoded === "string") {
+    throw new Error(
+      "Invalid refresh token"
+    );
+  }
+
+  const accessToken = jwt.sign(
+    {
+      sub: decoded.sub,
+    },
+    env.JWT_ACCESS_SECRET,
+    {
+      expiresIn: "15m",
+    }
+  );
+
+  return accessToken;
 }
