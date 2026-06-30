@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma";
 import { generateSlug } from "../utils/slug";
-import { WorkspaceRole } from "../generated/prisma/enums";
+import { WorkspaceRole } from "@prisma/client";
+import { AppError } from "../utils/appError";
 
 export async function createWorkspace(
   name: string,
@@ -81,7 +82,8 @@ export async function getWorkspaceById(
     });
 
   if (!workspace) {
-    throw new Error(
+    throw new AppError(
+      404,
       "Workspace not found"
     );
   }
@@ -113,7 +115,10 @@ export async function updateWorkspace(
 
   // User is not a member
   if (!membership) {
-    throw new Error("Workspace not found");
+    throw new AppError(
+      404,
+      "Workspace not found"
+    );
   }
 
   // User doesn't have permission
@@ -121,7 +126,8 @@ export async function updateWorkspace(
     membership.role !== WorkspaceRole.OWNER &&
     membership.role !== WorkspaceRole.ADMIN
   ) {
-    throw new Error(
+    throw new AppError(
+      403,
       "You are not allowed to update this workspace"
     );
   }
@@ -158,14 +164,18 @@ export async function deleteWorkspace(
     });
 
   if (!membership) {
-    throw new Error("Workspace not found");
+    throw new AppError(
+      404,
+      "Workspace not found"
+    );
   }
 
   if (
     membership.role !==
     WorkspaceRole.OWNER
   ) {
-    throw new Error(
+    throw new AppError(
+      403,
       "Only the owner can delete the workspace"
     );
   }
@@ -195,7 +205,8 @@ export async function inviteMember(
     });
 
   if (!inviter) {
-    throw new Error(
+    throw new AppError(
+      404,
       "Workspace not found"
     );
   }
@@ -206,7 +217,8 @@ export async function inviteMember(
     inviter.role !==
       WorkspaceRole.ADMIN
   ) {
-    throw new Error(
+    throw new AppError(
+      403,
       "Not authorized"
     );
   }
@@ -219,7 +231,8 @@ export async function inviteMember(
     });
 
   if (!user) {
-    throw new Error(
+    throw new AppError(
+      404,
       "User not found"
     );
   }
@@ -235,7 +248,8 @@ export async function inviteMember(
     });
 
   if (existing) {
-    throw new Error(
+    throw new AppError(
+      409,
       "User already a member"
     );
   }
@@ -266,7 +280,8 @@ export async function removeMember(
     });
 
   if (!requester) {
-    throw new Error(
+    throw new AppError(
+      404,
       "Workspace not found"
     );
   }
@@ -277,7 +292,8 @@ export async function removeMember(
     requester.role !==
       WorkspaceRole.ADMIN
   ) {
-    throw new Error(
+    throw new AppError(
+      403,
       "Not authorized"
     );
   }
@@ -293,7 +309,8 @@ export async function removeMember(
     });
 
   if (!member) {
-    throw new Error(
+    throw new AppError(
+      404,
       "Member not found"
     );
   }
@@ -302,7 +319,8 @@ export async function removeMember(
     member.role ===
     WorkspaceRole.OWNER
   ) {
-    throw new Error(
+    throw new AppError(
+      403,
       "Owner cannot be removed"
     );
   }

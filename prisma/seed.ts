@@ -1,4 +1,5 @@
 import "dotenv/config";
+import bcrypt from "bcrypt";
 import { prisma } from "../src/config/prisma";
 
 async function main() {
@@ -12,11 +13,13 @@ async function main() {
   await prisma.refreshToken.deleteMany();
   await prisma.user.deleteMany();
 
+  const passwordHash = await bcrypt.hash("seed-password", 12);
+
   const admin = await prisma.user.create({
     data: {
       name: "Admin User",
       email: "admin@devcollab.com",
-      passwordHash: "seed-password",
+      passwordHash,
       role: "ADMIN",
     },
   });
@@ -48,22 +51,27 @@ async function main() {
       {
         title: "Setup Backend",
         projectId: project.id,
+        createdById: admin.id,
       },
       {
         title: "Create Auth API",
         projectId: project.id,
+        createdById: admin.id,
       },
       {
         title: "Create Workspace API",
         projectId: project.id,
+        createdById: admin.id,
       },
       {
         title: "Create Task API",
         projectId: project.id,
+        createdById: admin.id,
       },
       {
         title: "Deploy Application",
         projectId: project.id,
+        createdById: admin.id,
       },
     ],
   });

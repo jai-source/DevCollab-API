@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { registerSchema } from "../modules/auth/auth.schema";
-import { loginSchema } from "../modules/auth/auth.schema"
+import { loginSchema } from "../modules/auth/auth.schema";
 import { registerUser } from "../services/auth.service";
 import { getUserById } from "../services/auth.service";
-import { loginUser } from "../services/auth.service"
+import { loginUser } from "../services/auth.service";
 import { successResponse } from "../utils/apiResponse";
 import { logoutUser } from "../services/auth.service";
 import { logoutSchema } from "../modules/auth/auth.schema";
@@ -28,12 +28,11 @@ export async function register(
     201,
     "user registered succesfully..",
     {
-        id: user.id,
-        name: user.name,
-        email: user.email,
+      id: user.id,
+      name: user.name,
+      email: user.email,
     }
   );
-
 }
 
 export async function login(
@@ -71,7 +70,7 @@ export async function getCurrentUser(
   res: Response
 ) {
   const user = await getUserById(
-    (req as any).user.id
+    (req as any).user!.id
   );
 
   return successResponse(

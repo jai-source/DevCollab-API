@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authRoutes from "./auth.routes";
 import workspaceRoutes from "../routes/workspace.route";
+import projectRoutes from "../routes/project.route"
 
 
 
@@ -17,6 +18,10 @@ router.use("/auth", authRoutes);
 router.use(
   "/workspaces",
   workspaceRoutes
+);
+router.use(
+  "/projects",
+  projectRoutes
 );
 
 export default router;

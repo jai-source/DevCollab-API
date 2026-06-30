@@ -7,12 +7,18 @@ import { update } from "../controllers/workspace.controller";
 import { remove } from "../controllers/workspace.controller";
 import { invite } from "../controllers/workspace.controller";
 import { removeMemberController } from "../controllers/workspace.controller";
+import projectRoutes from "./project.route";
 const router = Router();
 
 router.post(
   "/",
   authenticate,
   create
+);
+
+router.use(
+  "/:workspaceId/projects",
+  projectRoutes
 );
 
 router.get(

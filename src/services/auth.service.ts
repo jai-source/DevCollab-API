@@ -5,6 +5,7 @@ import { LoginInput } from "../modules/auth/auth.schema";
 import { generateAccessToken, generateRefreshToken } from "../utils/JWT";
 import jwt from "jsonwebtoken";
 import env from "../config/env";
+import { AppError } from "../utils/appError";
 
 //Register User
 export async function registerUser(data: RegisterInput) {
@@ -15,7 +16,10 @@ export async function registerUser(data: RegisterInput) {
   });
 
   if (existingUser) {
-    throw new Error("Email already registered");
+    throw new AppError(
+      409,
+      "Email already registered"
+    );
   }
 
   const passwordHash = await bcrypt.hash(
@@ -46,7 +50,10 @@ export async function loginUser(
   });
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new AppError(
+      401,
+      "Invalid credentials"
+    );
   }
 
   const passwordMatch =
@@ -56,7 +63,10 @@ export async function loginUser(
     );
 
   if (!passwordMatch) {
-    throw new Error("Invalid credentials");
+    throw new AppError(
+      401,
+      "Invalid credentials"
+    );
   }
 
   const accessToken =
@@ -99,6 +109,13 @@ export async function getUserById(
       },
     });
 
+  if (!user) {
+    throw new AppError(
+      404,
+      "User not found"
+    );
+  }
+
   return user;
 }
 
@@ -124,30 +141,46 @@ export async function refreshAccessToken(
     });
 
   if (!storedToken) {
-    throw new Error(
+    throw new AppError(
+      401,
       "Refresh token not found"
     );
   }
 
-  const decoded = jwt.verify(
-    refreshToken,
-    env.JWT_REFRESH_SECRET
-  );
+  if (storedToken.expiresAt < new Date()) {
+    await prisma.refreshToken.delete({
+      where: {
+        token: refreshToken,
+      },
+    }).catch(() => {});
+    throw new AppError(
+      401,
+      "Refresh token expired"
+    );
+  }
 
-  if (typeof decoded === "string") {
-    throw new Error(
+  let decoded: jwt.JwtPayload | string;
+  try {
+    decoded = jwt.verify(
+      refreshToken,
+      env.JWT_REFRESH_SECRET
+    );
+  } catch {
+    throw new AppError(
+      401,
       "Invalid refresh token"
     );
   }
 
-  const accessToken = jwt.sign(
-    {
-      sub: decoded.sub,
-    },
-    env.JWT_ACCESS_SECRET,
-    {
-      expiresIn: "15m",
-    }
+  if (typeof decoded === "string" || !decoded.sub) {
+    throw new AppError(
+      401,
+      "Invalid refresh token"
+    );
+  }
+
+  const accessToken = generateAccessToken(
+    Number(decoded.sub)
   );
 
   return accessToken;

@@ -22,7 +22,7 @@ export async function create(
   const workspace =
     await createWorkspace(
       name,
-      (req as any).user.id
+      req.user!.id
     );
 
   return successResponse(
@@ -38,7 +38,7 @@ export async function getWorkspaces(
 ) {
   const workspaces =
     await getUserWorkspaces(
-      (req as any).user.id
+      req.user!.id
     );
 
   return successResponse(
@@ -56,7 +56,7 @@ export async function getWorkspace(
   const workspace =
     await getWorkspaceById(
       Number(req.params.workspaceId),
-      (req as any).user.id
+      req.user!.id
     );
 
   return successResponse(
@@ -80,7 +80,7 @@ export async function update(
   const workspace =
     await updateWorkspace(
       Number(req.params.workspaceId),
-      (req as any).user.id,
+      req.user!.id,
       name
     );
 
@@ -99,7 +99,7 @@ export async function remove(
 ) {
   await deleteWorkspace(
     Number(req.params.workspaceId),
-    (req as any).user.id
+    req.user!.id
   );
 
   return res.status(204).send();
@@ -117,7 +117,7 @@ export async function invite(
   const member =
     await inviteMember(
       Number(req.params.workspaceId),
-      (req as any).user.id,
+      req.user!.id,
       userId,
       role
     );
@@ -136,7 +136,7 @@ export async function removeMemberController(
 ) {
   await removeMember(
     Number(req.params.workspaceId),
-    (req as any).user.id,
+    req.user!.id,
     Number(req.params.userId)
   );
 
