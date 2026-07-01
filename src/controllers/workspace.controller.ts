@@ -109,18 +109,18 @@ export async function invite(
   req: Request,
   res: Response
 ) {
-  const { userId, role } =
+  const { email, role } =
     inviteMemberSchema.parse(
       req.body
     );
 
   const member =
     await inviteMember(
-      Number(req.params.workspaceId),
-      req.user!.id,
-      userId,
-      role
-    );
+  Number(req.params.workspaceId),
+  (req as any).user.id,
+  email,
+  role
+);
 
   return successResponse(
     res,

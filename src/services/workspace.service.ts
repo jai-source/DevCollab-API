@@ -191,7 +191,7 @@ export async function deleteWorkspace(
 export async function inviteMember(
   workspaceId: number,
   inviterId: number,
-  userId: number,
+  email: string,
   role: WorkspaceRole
 ) {
   const inviter =
@@ -212,10 +212,8 @@ export async function inviteMember(
   }
 
   if (
-    inviter.role !==
-      WorkspaceRole.OWNER &&
-    inviter.role !==
-      WorkspaceRole.ADMIN
+    inviter.role !== WorkspaceRole.OWNER &&
+    inviter.role !== WorkspaceRole.ADMIN
   ) {
     throw new AppError(
       403,
@@ -226,7 +224,7 @@ export async function inviteMember(
   const user =
     await prisma.user.findUnique({
       where: {
-        id: userId,
+        email,
       },
     });
 
@@ -241,7 +239,7 @@ export async function inviteMember(
     await prisma.workspaceMember.findUnique({
       where: {
         userId_workspaceId: {
-          userId,
+          userId: user.id,
           workspaceId,
         },
       },
@@ -256,7 +254,7 @@ export async function inviteMember(
 
   return prisma.workspaceMember.create({
     data: {
-      userId,
+      userId: user.id,
       workspaceId,
       role,
     },

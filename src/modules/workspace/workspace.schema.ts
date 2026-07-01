@@ -12,11 +12,7 @@ export const updateWorkspaceSchema = z.object({
 });
 
 export const inviteMemberSchema =
-  z.object({
-    userId: z.number(),
-
-    role: z.enum([
-      "ADMIN",
-      "MEMBER",
-    ]),
-  });
+z.object({
+  email: z.string().email(),
+  role: z.enum(["OWNER", "ADMIN", "MEMBER"]),
+});
