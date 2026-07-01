@@ -1,7 +1,5 @@
 import { Router } from "express";
-
 import { authenticate } from "../middleware/auth.middleware";
-
 import {
   create,
   getTasks,
@@ -9,39 +7,25 @@ import {
   update,
   remove,
 } from "../controllers/task.controller";
+import commentRoutes from "./comment.route";
+
+
 
 const router = Router({
   mergeParams: true,
 });
 
-router.post(
-  "/",
-  authenticate,
-  create
-);
 
-router.get(
-  "/",
-  authenticate,
-  getTasks
-);
+router.post("/",authenticate,create);
 
-router.get(
-  "/:taskId",
-  authenticate,
-  getTask
-);
+router.use("/:taskId/comments", commentRoutes);
 
-router.patch(
-  "/:taskId",
-  authenticate,
-  update
-);
+router.get("/",authenticate, getTasks);
 
-router.delete(
-  "/:taskId",
-  authenticate,
-  remove
-);
+router.get("/:taskId",authenticate,getTask);
+
+router.patch("/:taskId",authenticate,update);
+
+router.delete("/:taskId",authenticate,remove);
 
 export default router;
